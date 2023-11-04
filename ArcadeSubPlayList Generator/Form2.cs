@@ -22,7 +22,8 @@ namespace ArcadeSubPlayList_Generator
 		private void button1_Click(object sender, EventArgs e)
 		{
 			res = textBox1.Text;
-			type = comboBox1.SelectedItem.ToString();
+			if (comboBox1.SelectedItem == null) type = "";
+			else type = comboBox1.SelectedItem.ToString();
 			this.DialogResult = DialogResult.OK;
 			this.Close();
 		}

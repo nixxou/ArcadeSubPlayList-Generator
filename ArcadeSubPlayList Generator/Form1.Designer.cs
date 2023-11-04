@@ -43,6 +43,7 @@
 			label1 = new Label();
 			label2 = new Label();
 			label3 = new Label();
+			btn_multiplatform = new Button();
 			SuspendLayout();
 			// 
 			// cmb_plateform_source
@@ -188,11 +189,22 @@
 			label3.TabIndex = 20;
 			label3.Text = "Destination Platform :";
 			// 
+			// btn_multiplatform
+			// 
+			btn_multiplatform.Location = new Point(513, 368);
+			btn_multiplatform.Name = "btn_multiplatform";
+			btn_multiplatform.Size = new Size(257, 31);
+			btn_multiplatform.TabIndex = 21;
+			btn_multiplatform.Text = "Turn playlists into multi platform";
+			btn_multiplatform.UseVisualStyleBackColor = true;
+			btn_multiplatform.Click += btn_multiplatform_Click;
+			// 
 			// Form1
 			// 
 			AutoScaleDimensions = new SizeF(7F, 15F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(799, 450);
+			Controls.Add(btn_multiplatform);
 			Controls.Add(label3);
 			Controls.Add(label2);
 			Controls.Add(label1);
@@ -209,7 +221,7 @@
 			Controls.Add(btn_explore);
 			Controls.Add(txt_xmlfolder);
 			Name = "Form1";
-			Text = "Form1";
+			Text = " ";
 			Load += Form1_Load;
 			ResumeLayout(false);
 			PerformLayout();
@@ -232,5 +244,6 @@
 		private Label label1;
 		private Label label2;
 		private Label label3;
+		private Button btn_multiplatform;
 	}
 }

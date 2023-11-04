@@ -128,6 +128,7 @@ namespace ArcadeSubPlayList_Generator
 
 				}
 			}
+			Reload(plateformSourceName);
 		}
 
 		static void CopyDirectoryAndRenameFile(string sourceDir, string destDir, string originalName, string newName)
@@ -162,14 +163,35 @@ namespace ArcadeSubPlayList_Generator
 
 		private void cmb_plateform_source_SelectedIndexChanged(object sender, EventArgs e)
 		{
+			string plateformSourceName = cmb_plateform_source.SelectedItem.ToString().Trim();
+			Reload(plateformSourceName);
+
+		}
+
+		private void Reload(string plateformSourceName)
+		{
+
+			List<string> alreadySelected = new List<string>();
+			if (cmb_plateform_source.SelectedItem.ToString().Trim() == plateformSourceName)
+			{
+				foreach (var s in listbox_PlaylistSource.SelectedItems)
+				{
+					alreadySelected.Add(s.ToString());
+				}
+			}
+
+
+
 			listbox_PlaylistSource.Items.Clear();
 			PlaylistsSourceFiles.Clear();
 			PlaylistsSourceXdoc.Clear();
-			string plateformSourceName = cmb_plateform_source.SelectedItem.ToString().Trim();
+
 			if (String.IsNullOrEmpty(plateformSourceName))
 			{
 				return;
 			}
+
+
 
 			var playlistFiles = Directory.GetFiles(Path.Combine(txt_xmlfolder.Text, "Data", "Playlists"), "*.xml");
 			foreach (var file in playlistFiles)
@@ -191,6 +213,17 @@ namespace ArcadeSubPlayList_Generator
 					}
 				}
 			}
+
+			foreach (var itemToSelect in alreadySelected)
+			{
+				int index = listbox_PlaylistSource.Items.IndexOf(itemToSelect);
+				if (index >= 0)
+				{
+					listbox_PlaylistSource.SetSelected(index, true);
+				}
+			}
+
+
 		}
 
 		private void button1_Click(object sender, EventArgs e)
@@ -414,6 +447,9 @@ namespace ArcadeSubPlayList_Generator
 			{
 				listbox_PlaylistSource.Items.Remove(selected);
 			}
+
+			string plateformSourceName = cmb_plateform_source.SelectedItem.ToString().Trim();
+			Reload(plateformSourceName);
 		}
 
 		private void btn_changeParentNode_Click(object sender, EventArgs e)
@@ -482,6 +518,46 @@ namespace ArcadeSubPlayList_Generator
 
 			}
 			xdoc.Save(parentXmlFile);
+			string plateformSourceName = cmb_plateform_source.SelectedItem.ToString().Trim();
+			Reload(plateformSourceName);
+		}
+
+		private void btn_multiplatform_Click(object sender, EventArgs e)
+		{
+
+			Form2 testDialog = new Form2();
+			string newName = "";
+			string newNameType = "";
+			if (testDialog.ShowDialog(this) == DialogResult.OK)
+			{
+				newName = testDialog.res;
+				newNameType = testDialog.type;
+			}
+
+
+
+
+			foreach (var selected in listbox_PlaylistSource.SelectedItems)
+			{
+
+				string selected_playlist = selected.ToString();
+				var playlist = PlaylistsSourceXdoc[selected_playlist];
+
+				playlist.Root.Elements("PlaylistFilter").Where(e => (string)e.Element("FieldKey") == "Platform").First().Remove();
+
+				XElement newNode = new XElement("PlaylistFilter",
+					new XElement("Value", newName),
+					new XElement("FieldKey", "Platform"),
+					new XElement("ComparisonTypeKey", "HasAtLeastOneOf")
+					);
+
+				playlist.Root.Add(newNode);
+				playlist.Save(PlaylistsSourceFiles[selected_playlist]);
+
+			}
+
+			string plateformSourceName = cmb_plateform_source.SelectedItem.ToString().Trim();
+			Reload(plateformSourceName);
 		}
 	}
 }
